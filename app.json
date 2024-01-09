@@ -25,6 +25,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
-  }
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  },
+  "scheme": "technical-test",
+  "web": {
+    "bundler": "metro"
+  },
+  "main": "expo-router/app/entry"
 }
