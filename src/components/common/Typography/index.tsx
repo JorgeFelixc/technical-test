@@ -1,5 +1,5 @@
-import React, { Children } from "react";
-import { StyleSheet, Text } from "react-native";
+import React from "react";
+import { StyleSheet, Text, TextProps } from "react-native";
 
 const variantTypes = {
   small: "sm",
@@ -12,16 +12,21 @@ const variantTypes = {
 
 type VariantTypes = typeof variantTypes[keyof typeof variantTypes];
 
-interface TypographyProps {
+interface TypographyProps extends TextProps {
   variant?: VariantTypes;
   children: React.ReactNode;
 }
 export default function Typography({
   children,
   variant = "sm",
+  ...others
 }: TypographyProps) {
   const currentStyle = styles[variant];
-  return <Text style={currentStyle}>{children}</Text>;
+  return (
+    <Text {...others} style={[others.style, currentStyle]}>
+      {children}
+    </Text>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -39,5 +44,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 26,
   },
-  [variantTypes.subtitle]: {},
+  [variantTypes.subtitle]: {
+    fontSize: 18,
+    fontWeight: "500",
+  },
 });
