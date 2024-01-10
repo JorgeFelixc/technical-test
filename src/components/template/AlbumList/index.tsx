@@ -1,8 +1,9 @@
-import React from "react";
-import { Button, FlatList, StyleSheet, View } from "react-native";
-import Typography from "../../common/Typography";
+import React, { useMemo } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
 import { useGetAlbumByUserQuery } from "../../../services/albums";
-import { TouchableHighlight } from "react-native-gesture-handler";
+import AlbumRow from "./AlbumRow";
+import { useSelector } from "react-redux";
+import { selectDeletedAlbumsByUserId } from "../../../store/slices/albumSlice";
 
 interface AlbumListProps {
   userId: number;
@@ -11,25 +12,25 @@ interface AlbumListProps {
 export default function AlbumList({ userId }: AlbumListProps) {
   const { data } = useGetAlbumByUserQuery(userId.toString());
 
+  const deletedAlbums = useSelector((state: any) =>
+    selectDeletedAlbumsByUserId(state, userId)
+  );
+
+  /**
+   * Removing the deleted data from the original data.
+   */
+  const dataWithoutDeleted = useMemo(() => {
+    if (!data) {
+      return [];
+    }
+    return data.filter((album) => !deletedAlbums?.includes(album.id));
+  }, [data, deletedAlbums]);
+
   return (
     <View>
       <FlatList
-        data={data}
-        renderItem={(item) => (
-          <TouchableHighlight
-            activeOpacity={0.6}
-            underlayColor="#DDDDDD"
-            onPress={() => alert("prssed")}
-          >
-            <View key={item.item.id} style={styles.albumListContainer}>
-              <Typography style={styles.textContainer} variant="sm">
-                {item.item.title}
-              </Typography>
-
-              <Button title="remove" />
-            </View>
-          </TouchableHighlight>
-        )}
+        data={dataWithoutDeleted}
+        renderItem={(item) => <AlbumRow key={item.item.id} album={item.item} />}
         keyExtractor={(item) => item.id.toString()}
         ItemSeparatorComponent={() => <View style={styles.separator}></View>}
       />

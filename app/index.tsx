@@ -3,6 +3,7 @@ import { FlatList, View } from "react-native";
 import Typography from "../src/components/common/Typography";
 import { useGetUsersQuery } from "../src/services/users";
 import UserList from "../src/components/template/UserList";
+import { Stack } from "expo-router";
 
 export default function index() {
   const { isLoading, data, isError, error } = useGetUsersQuery();
@@ -34,6 +35,11 @@ export default function index() {
 
   return (
     <View>
+      <Stack.Screen
+        options={{
+          title: "Users",
+        }}
+      />
       <FlatList
         data={data}
         renderItem={(item) => <UserList user={item.item} />}

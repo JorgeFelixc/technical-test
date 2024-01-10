@@ -2,19 +2,24 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { User } from '../types/users'
 import { Endpoints } from '../constants/endpoints'
 import { Album } from '../types/album'
+import { Photo } from '../types/photo'
 
-export const albumApi = createApi({
-  reducerPath: 'albumApi',
+export const photoApi = createApi({
+  reducerPath: 'photoApi',
   baseQuery: fetchBaseQuery({ baseUrl: process.env.EXPO_PUBLIC_API_URL }),
   endpoints: builder => ({
-    getAlbumByUser: builder.query<Album[], string>({
+    getPhotoByAlbumId: builder.query<Photo[], string>({
       /** For purpose of this gonna use replace but URLSearchParameters would better. */
-      query: (userId) => Endpoints.AlbumByUser.replace(':id', userId),
+      query: (albumId) => Endpoints.PhotoByAlbum.replace(':id', albumId),
     }),
+    getPhotos: builder.query<Photo[], void>({
+      query: () => Endpoints.Photos,
+    })
   })
 })
 
 
 export const {
-  useGetAlbumByUserQuery
-} = albumApi
+  useGetPhotoByAlbumIdQuery,
+  useGetPhotosQuery
+} = photoApi
