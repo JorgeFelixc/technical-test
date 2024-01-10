@@ -12,6 +12,8 @@ import Typography from "../../src/components/common/Typography";
 import { useGetPhotoByAlbumIdQuery } from "../../src/services/photos";
 import { Photo } from "../../src/types/photo";
 import { getItemGrid } from "../../src/utils";
+import { AntDesign } from "@expo/vector-icons";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 export default function Page() {
   const { id } = useLocalSearchParams();
@@ -48,17 +50,29 @@ export default function Page() {
         options={{
           title: "Title",
           headerRight: () => (
-            <Button
-              title={toggleAllPhotos ? "all" : "single"}
+            <TouchableHighlight
+              activeOpacity={0.6}
+              underlayColor="transparent"
               onPress={handleOnPressAll}
-            />
+            >
+              <AntDesign
+                style={styles.iconBox}
+                name={toggleAllPhotos ? "staro" : "star"}
+                size={24}
+                color="black"
+              />
+            </TouchableHighlight>
           ),
         }}
       />
       <VirtualizedList
         data={data}
         getItem={(data, index) => getItemGrid<Photo>(data, index)}
-        getItemCount={(data) => data?.length || 20}
+        getItemCount={(data) => data?.length}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={11}
+        updateCellsBatchingPeriod={100}
         keyExtractor={(data, index) => `gridalbum-${index}`}
         renderItem={(item) => (
           <View style={styles.albumContainer}>
@@ -92,5 +106,9 @@ const styles = StyleSheet.create({
     minWidth: "33.33%",
     height: 255,
     textAlign: "center",
+  },
+  iconBox: {
+    padding: 4,
+    borderRadius: 4,
   },
 });
