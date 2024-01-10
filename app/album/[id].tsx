@@ -14,18 +14,15 @@ import { Photo } from "../../src/types/photo";
 import { getItemGrid } from "../../src/utils";
 import { AntDesign } from "@expo/vector-icons";
 import { TouchableHighlight } from "react-native-gesture-handler";
+import PhotosMosaic from "../../src/components/template/PhotosMosaic";
 
 export default function Page() {
   const { id } = useLocalSearchParams();
   const fallbackId = Array.isArray(id) ? id[0] : id;
   const [toggleAllPhotos, setToggleAllPothos] = useState(fallbackId);
 
-  const { data, isError, isLoading, isFetching } = useGetPhotoByAlbumIdQuery(
-    toggleAllPhotos,
-    {
-      skip: typeof id !== "string",
-    }
-  );
+  const { data, isError, isLoading, isFetching } =
+    useGetPhotoByAlbumIdQuery(toggleAllPhotos);
 
   const handleOnPressAll = () => {
     if (toggleAllPhotos) {
@@ -75,16 +72,7 @@ export default function Page() {
         updateCellsBatchingPeriod={100}
         keyExtractor={(data, index) => `gridalbum-${index}`}
         renderItem={(item) => (
-          <View style={styles.albumContainer}>
-            {item.item.map((s) => (
-              <View key={s.id} style={styles.albumBox}>
-                <Image
-                  style={styles.albumThumbnailImage}
-                  source={{ uri: s.thumbnailUrl }}
-                />
-              </View>
-            ))}
-          </View>
+          <PhotosMosaic photos={item.item} key={item.index} />
         )}
       />
     </View>
@@ -92,21 +80,6 @@ export default function Page() {
 }
 
 const styles = StyleSheet.create({
-  albumContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  albumThumbnailImage: {
-    height: "100%",
-    width: "100%",
-    alignSelf: "flex-start",
-  },
-  albumBox: {
-    alignSelf: "flex-start",
-    minWidth: "33.33%",
-    height: 255,
-    textAlign: "center",
-  },
   iconBox: {
     padding: 4,
     borderRadius: 4,
