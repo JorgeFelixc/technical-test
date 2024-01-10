@@ -21,7 +21,7 @@ export default function AlbumRow({ album }: AlbumRowProps) {
   const dispatch = useDispatch();
 
   const handleOnPress = (event: GestureResponderEvent) => {
-    router.push(`/album/${album.id}`);
+    router.push(`/album/${album.id}?title=${album.title}`);
     event.stopPropagation();
   };
 
