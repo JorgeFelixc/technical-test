@@ -20,8 +20,9 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 import PhotosMosaic from "../../src/components/template/PhotosMosaic";
 import Container from "../../src/components/common/Container";
 
+const DEFAULT_TITLE = "Album";
 export default function Page() {
-  const { id } = useLocalSearchParams();
+  const { id, ...params } = useLocalSearchParams();
   const fallbackId = Array.isArray(id) ? id[0] : id;
   const [toggleAllPhotos, setToggleAllPothos] = useState(fallbackId);
 
@@ -35,11 +36,13 @@ export default function Page() {
     setToggleAllPothos(fallbackId);
   };
 
+  const defaultTitle =
+    typeof params.title === "string" ? params.title : DEFAULT_TITLE;
   return (
     <Container uiState={others}>
       <Stack.Screen
         options={{
-          title: "Title",
+          title: toggleAllPhotos ? defaultTitle : "All Photos",
           headerRight: () => (
             <TouchableHighlight
               activeOpacity={0.6}
