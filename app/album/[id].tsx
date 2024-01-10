@@ -9,20 +9,23 @@ import {
   VirtualizedList,
 } from "react-native";
 import Typography from "../../src/components/common/Typography";
-import { useGetPhotoByAlbumIdQuery } from "../../src/services/photos";
+import {
+  useGetPhotoByAlbumIdQuery,
+  useGetPhotosBuilderQuery,
+} from "../../src/services/photos";
 import { Photo } from "../../src/types/photo";
 import { getItemGrid } from "../../src/utils";
 import { AntDesign } from "@expo/vector-icons";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import PhotosMosaic from "../../src/components/template/PhotosMosaic";
+import Container from "../../src/components/common/Container";
 
 export default function Page() {
   const { id } = useLocalSearchParams();
   const fallbackId = Array.isArray(id) ? id[0] : id;
   const [toggleAllPhotos, setToggleAllPothos] = useState(fallbackId);
 
-  const { data, isError, isLoading, isFetching } =
-    useGetPhotoByAlbumIdQuery(toggleAllPhotos);
+  const { data, ...others } = useGetPhotosBuilderQuery(toggleAllPhotos);
 
   const handleOnPressAll = () => {
     if (toggleAllPhotos) {
@@ -32,17 +35,8 @@ export default function Page() {
     setToggleAllPothos(fallbackId);
   };
 
-  if (isLoading || isFetching) {
-    return (
-      <View>
-        <Stack.Screen options={{ title: "Title" }} />
-        <Typography>Loading..</Typography>
-      </View>
-    );
-  }
-
   return (
-    <View>
+    <Container uiState={others}>
       <Stack.Screen
         options={{
           title: "Title",
@@ -75,7 +69,7 @@ export default function Page() {
           <PhotosMosaic photos={item.item} key={item.index} />
         )}
       />
-    </View>
+    </Container>
   );
 }
 
