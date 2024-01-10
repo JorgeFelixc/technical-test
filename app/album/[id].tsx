@@ -1,6 +1,7 @@
 import { Stack, useLocalSearchParams } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
+  Button,
   FlatList,
   Image,
   StyleSheet,
@@ -10,30 +11,32 @@ import {
 import Typography from "../../src/components/common/Typography";
 import { useGetPhotoByAlbumIdQuery } from "../../src/services/photos";
 import { Photo } from "../../src/types/photo";
+import { getItemGrid } from "../../src/utils";
 
 export default function Page() {
   const { id } = useLocalSearchParams();
   const fallbackId = Array.isArray(id) ? id[0] : id;
+  const [toggleAllPhotos, setToggleAllPothos] = useState(fallbackId);
 
-  const { data, isError, isLoading } = useGetPhotoByAlbumIdQuery(
-    fallbackId || "",
+  const { data, isError, isLoading, isFetching } = useGetPhotoByAlbumIdQuery(
+    toggleAllPhotos,
     {
       skip: typeof id !== "string",
     }
   );
 
-  const getItem = (_data: Photo[], index: number) => {
-    let items = [];
-    for (let i = 0; i < 3; i++) {
-      const item = _data[index * 3 + i];
-      item && items.push(item);
+  const handleOnPressAll = () => {
+    if (toggleAllPhotos) {
+      setToggleAllPothos("");
+      return;
     }
-    return items;
+    setToggleAllPothos(fallbackId);
   };
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <View>
+        <Stack.Screen options={{ title: "Title" }} />
         <Typography>Loading..</Typography>
       </View>
     );
@@ -44,11 +47,17 @@ export default function Page() {
       <Stack.Screen
         options={{
           title: "Title",
+          headerRight: () => (
+            <Button
+              title={toggleAllPhotos ? "all" : "single"}
+              onPress={handleOnPressAll}
+            />
+          ),
         }}
       />
       <VirtualizedList
         data={data}
-        getItem={getItem}
+        getItem={(data, index) => getItemGrid<Photo>(data, index)}
         getItemCount={(data) => data?.length || 20}
         keyExtractor={(data, index) => `gridalbum-${index}`}
         renderItem={(item) => (
