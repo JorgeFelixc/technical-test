@@ -10,6 +10,7 @@ import {
 import Typography from "../../common/Typography";
 import { useDispatch } from "react-redux";
 import { deleteAlbum } from "../../../store/slices/albumSlice";
+import { router } from "expo-router";
 
 interface AlbumRowProps {
   album: Album;
@@ -19,8 +20,8 @@ export default function AlbumRow({ album }: AlbumRowProps) {
   const dispatch = useDispatch();
 
   const handleOnPress = (event: GestureResponderEvent) => {
+    router.push(`/album/${album.id}`);
     event.stopPropagation();
-    alert(album.title);
   };
 
   const handleOnRemove = () => {

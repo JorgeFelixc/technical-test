@@ -12,7 +12,7 @@ export default function App() {
             backgroundColor: "#EFEFEF",
           },
           headerStyle: styles.container,
-          title: "Users",
+          // title: "Users",
           headerShadowVisible: false,
         }}
       />
