@@ -27,7 +27,6 @@ const style = StyleSheet.create({
     backgroundColor: "#ffffff",
   },
   userName: {
-    // paddingVertical: 12,
     padding: 12,
   },
 });

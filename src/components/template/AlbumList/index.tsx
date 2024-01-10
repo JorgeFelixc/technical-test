@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
   albumListContainer: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-    // backgroundColor: "coral",
     marginVertical: 4,
     flexDirection: "row",
     justifyContent: "space-between",

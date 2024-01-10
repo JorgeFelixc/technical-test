@@ -1,4 +1,4 @@
-import React, { Children } from "react";
+import React from "react";
 import { StyleSheet, Text, TextProps } from "react-native";
 
 const variantTypes = {
