@@ -8,18 +8,20 @@ export const photoApi = createApi({
   reducerPath: 'photoApi',
   baseQuery: fetchBaseQuery({ baseUrl: process.env.EXPO_PUBLIC_API_URL }),
   endpoints: builder => ({
-    getPhotoByAlbumId: builder.query<Photo[], string>({
+    getPhotoByAlbumId: builder.query<Photo[], string | undefined>({
       /** For purpose of this gonna use replace but URLSearchParameters would better. */
-      query: (albumId) => Endpoints.PhotoByAlbum.replace(':id', albumId),
-    }),
-    getPhotos: builder.query<Photo[], void>({
-      query: () => Endpoints.Photos,
+      query: (albumId) => {
+        /** Toggle to change to all photos if not passing albumId */
+        if (!albumId) {
+          return Endpoints.Photos
+        }
+        return Endpoints.PhotoByAlbum.replace(':id', albumId)
+      },
     })
   })
 })
 
 
 export const {
-  useGetPhotoByAlbumIdQuery,
-  useGetPhotosQuery
+  useGetPhotoByAlbumIdQuery
 } = photoApi
