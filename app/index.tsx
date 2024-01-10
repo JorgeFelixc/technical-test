@@ -4,37 +4,13 @@ import Typography from "../src/components/common/Typography";
 import { useGetUsersQuery } from "../src/services/users";
 import UserList from "../src/components/template/UserList";
 import { Stack } from "expo-router";
+import Container from "../src/components/common/Container";
 
 export default function index() {
-  const { isLoading, data, isError, error } = useGetUsersQuery();
-
-  console.log(error);
-  if (isLoading) {
-    return (
-      <View>
-        <Typography>Loading..</Typography>
-      </View>
-    );
-  }
-
-  if (isError) {
-    return (
-      <View>
-        <Typography>Error</Typography>
-      </View>
-    );
-  }
-
-  if (!data) {
-    return (
-      <View>
-        <Typography>Empty</Typography>
-      </View>
-    );
-  }
+  const { data, ...others } = useGetUsersQuery();
 
   return (
-    <View>
+    <Container uiState={others}>
       <Stack.Screen
         options={{
           title: "Users",
@@ -45,6 +21,6 @@ export default function index() {
         renderItem={(item) => <UserList user={item.item} />}
         keyExtractor={(item) => item.name}
       />
-    </View>
+    </Container>
   );
 }
