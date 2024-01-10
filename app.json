@@ -30,7 +30,7 @@
       "expo-router"
     ]
   },
-  "scheme": "technical-test",
+  "scheme": "technical",
   "web": {
     "bundler": "metro"
   },
