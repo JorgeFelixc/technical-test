@@ -1,8 +1,7 @@
 import React from "react";
-import { Button, FlatList, StyleSheet, View } from "react-native";
-import Typography from "../../common/Typography";
+import { FlatList, StyleSheet, View } from "react-native";
 import { useGetAlbumByUserQuery } from "../../../services/albums";
-import { TouchableHighlight } from "react-native-gesture-handler";
+import AlbumRow from "./AlbumRow";
 
 interface AlbumListProps {
   userId: number;
@@ -15,21 +14,7 @@ export default function AlbumList({ userId }: AlbumListProps) {
     <View>
       <FlatList
         data={data}
-        renderItem={(item) => (
-          <TouchableHighlight
-            activeOpacity={0.6}
-            underlayColor="#DDDDDD"
-            onPress={() => alert("prssed")}
-          >
-            <View key={item.item.id} style={styles.albumListContainer}>
-              <Typography style={styles.textContainer} variant="sm">
-                {item.item.title}
-              </Typography>
-
-              <Button title="remove" />
-            </View>
-          </TouchableHighlight>
-        )}
+        renderItem={(item) => <AlbumRow key={item.item.id} album={item.item} />}
         keyExtractor={(item) => item.id.toString()}
         ItemSeparatorComponent={() => <View style={styles.separator}></View>}
       />
