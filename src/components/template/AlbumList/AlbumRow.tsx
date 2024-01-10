@@ -11,6 +11,7 @@ import Typography from "../../common/Typography";
 import { useDispatch } from "react-redux";
 import { deleteAlbum } from "../../../store/slices/albumSlice";
 import { router } from "expo-router";
+import { AntDesign } from "@expo/vector-icons";
 
 interface AlbumRowProps {
   album: Album;
@@ -38,8 +39,13 @@ export default function AlbumRow({ album }: AlbumRowProps) {
         <Typography style={styles.textContainer} variant="sm">
           {album.title}
         </Typography>
-
-        <Button title="remove" onPress={handleOnRemove} />
+        <TouchableHighlight
+          onPress={handleOnRemove}
+          underlayColor="#DDDDDD"
+          activeOpacity={0.3}
+        >
+          <AntDesign name="minus" size={36} color="black" />
+        </TouchableHighlight>
       </View>
     </TouchableHighlight>
   );

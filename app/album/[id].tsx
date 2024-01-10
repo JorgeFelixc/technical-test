@@ -9,21 +9,23 @@ import {
   VirtualizedList,
 } from "react-native";
 import Typography from "../../src/components/common/Typography";
-import { useGetPhotoByAlbumIdQuery } from "../../src/services/photos";
+import {
+  useGetPhotoByAlbumIdQuery,
+  useGetPhotosBuilderQuery,
+} from "../../src/services/photos";
 import { Photo } from "../../src/types/photo";
 import { getItemGrid } from "../../src/utils";
+import { AntDesign } from "@expo/vector-icons";
+import { TouchableHighlight } from "react-native-gesture-handler";
+import PhotosMosaic from "../../src/components/template/PhotosMosaic";
+import Container from "../../src/components/common/Container";
 
 export default function Page() {
   const { id } = useLocalSearchParams();
   const fallbackId = Array.isArray(id) ? id[0] : id;
   const [toggleAllPhotos, setToggleAllPothos] = useState(fallbackId);
 
-  const { data, isError, isLoading, isFetching } = useGetPhotoByAlbumIdQuery(
-    toggleAllPhotos,
-    {
-      skip: typeof id !== "string",
-    }
-  );
+  const { data, ...others } = useGetPhotosBuilderQuery(toggleAllPhotos);
 
   const handleOnPressAll = () => {
     if (toggleAllPhotos) {
@@ -33,64 +35,47 @@ export default function Page() {
     setToggleAllPothos(fallbackId);
   };
 
-  if (isLoading || isFetching) {
-    return (
-      <View>
-        <Stack.Screen options={{ title: "Title" }} />
-        <Typography>Loading..</Typography>
-      </View>
-    );
-  }
-
   return (
-    <View>
+    <Container uiState={others}>
       <Stack.Screen
         options={{
           title: "Title",
           headerRight: () => (
-            <Button
-              title={toggleAllPhotos ? "all" : "single"}
+            <TouchableHighlight
+              activeOpacity={0.6}
+              underlayColor="transparent"
               onPress={handleOnPressAll}
-            />
+            >
+              <AntDesign
+                style={styles.iconBox}
+                name={toggleAllPhotos ? "staro" : "star"}
+                size={24}
+                color="black"
+              />
+            </TouchableHighlight>
           ),
         }}
       />
       <VirtualizedList
         data={data}
         getItem={(data, index) => getItemGrid<Photo>(data, index)}
-        getItemCount={(data) => data?.length || 20}
+        getItemCount={(data) => data?.length}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={11}
+        updateCellsBatchingPeriod={100}
         keyExtractor={(data, index) => `gridalbum-${index}`}
         renderItem={(item) => (
-          <View style={styles.albumContainer}>
-            {item.item.map((s) => (
-              <View key={s.id} style={styles.albumBox}>
-                <Image
-                  style={styles.albumThumbnailImage}
-                  source={{ uri: s.thumbnailUrl }}
-                />
-              </View>
-            ))}
-          </View>
+          <PhotosMosaic photos={item.item} key={item.index} />
         )}
       />
-    </View>
+    </Container>
   );
 }
 
 const styles = StyleSheet.create({
-  albumContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  albumThumbnailImage: {
-    height: "100%",
-    width: "100%",
-    alignSelf: "flex-start",
-  },
-  albumBox: {
-    alignSelf: "flex-start",
-    minWidth: "33.33%",
-    height: 255,
-    textAlign: "center",
+  iconBox: {
+    padding: 4,
+    borderRadius: 4,
   },
 });
