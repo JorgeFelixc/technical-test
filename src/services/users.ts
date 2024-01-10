@@ -6,7 +6,7 @@ export const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery: fetchBaseQuery({ baseUrl: process.env.EXPO_PUBLIC_API_URL }),
   endpoints: builder => ({
-    getUsers: builder.query<User, void>({
+    getUsers: builder.query<User[], void>({
       query: () => Endpoints.Users,
     })
   })

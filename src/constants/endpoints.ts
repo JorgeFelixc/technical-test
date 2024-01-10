@@ -1,4 +1,4 @@
 export const Endpoints = {
-  Users: "user",
+  Users: "users",
   AlbumByUser: "albums?userId=:id"
 }
