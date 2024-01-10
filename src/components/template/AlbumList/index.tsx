@@ -4,13 +4,15 @@ import { useGetAlbumByUserQuery } from "../../../services/albums";
 import AlbumRow from "./AlbumRow";
 import { useSelector } from "react-redux";
 import { selectDeletedAlbumsByUserId } from "../../../store/slices/albumSlice";
+import Container from "../../common/Container";
+import AlbumRowSkeleton from "./AlbumRowSkeleton";
 
 interface AlbumListProps {
   userId: number;
 }
 
 export default function AlbumList({ userId }: AlbumListProps) {
-  const { data } = useGetAlbumByUserQuery(userId.toString());
+  const { data, ...other } = useGetAlbumByUserQuery(userId.toString());
 
   const deletedAlbums = useSelector((state: any) =>
     selectDeletedAlbumsByUserId(state, userId)
@@ -27,14 +29,14 @@ export default function AlbumList({ userId }: AlbumListProps) {
   }, [data, deletedAlbums]);
 
   return (
-    <View>
+    <Container uiState={other} loadingFallback={<AlbumRowSkeleton />}>
       <FlatList
         data={dataWithoutDeleted}
         renderItem={(item) => <AlbumRow key={item.item.id} album={item.item} />}
         keyExtractor={(item) => item.id.toString()}
         ItemSeparatorComponent={() => <View style={styles.separator}></View>}
       />
-    </View>
+    </Container>
   );
 }
 
