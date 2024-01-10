@@ -1,25 +1,45 @@
 import React from "react";
 import { Album } from "../../../types/album";
-import { Button, StyleSheet, TouchableHighlight, View } from "react-native";
+import {
+  Button,
+  GestureResponderEvent,
+  StyleSheet,
+  TouchableHighlight,
+  View,
+} from "react-native";
 import Typography from "../../common/Typography";
+import { useDispatch } from "react-redux";
+import { deleteAlbum } from "../../../store/slices/albumSlice";
 
 interface AlbumRowProps {
   album: Album;
 }
 
 export default function AlbumRow({ album }: AlbumRowProps) {
+  const dispatch = useDispatch();
+
+  const handleOnPress = (event: GestureResponderEvent) => {
+    event.stopPropagation();
+    alert(album.title);
+  };
+
+  const handleOnRemove = () => {
+    alert("Removing....");
+    dispatch(deleteAlbum(album.id));
+  };
+
   return (
     <TouchableHighlight
       activeOpacity={0.6}
       underlayColor="#DDDDDD"
-      onPress={() => alert("prssed")}
+      onPress={handleOnPress}
     >
       <View style={styles.albumListContainer}>
         <Typography style={styles.textContainer} variant="sm">
           {album.title}
         </Typography>
 
-        <Button title="remove" />
+        <Button title="remove" onPress={handleOnRemove} />
       </View>
     </TouchableHighlight>
   );
