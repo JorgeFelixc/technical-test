@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { useGetAlbumByUserQuery } from "../../../services/albums";
 import AlbumRow from "./AlbumRow";
+import { useSelector } from "react-redux";
+import { selectDeletedAlbumsByUserId } from "../../../store/slices/albumSlice";
 
 interface AlbumListProps {
   userId: number;
@@ -10,10 +12,24 @@ interface AlbumListProps {
 export default function AlbumList({ userId }: AlbumListProps) {
   const { data } = useGetAlbumByUserQuery(userId.toString());
 
+  const deletedAlbums = useSelector((state: any) =>
+    selectDeletedAlbumsByUserId(state, userId)
+  );
+
+  /**
+   * Removing the deleted data from the original data.
+   */
+  const dataWithoutDeleted = useMemo(() => {
+    if (!data) {
+      return [];
+    }
+    return data.filter((album) => !deletedAlbums?.includes(album.id));
+  }, [data, deletedAlbums]);
+
   return (
     <View>
       <FlatList
-        data={data}
+        data={dataWithoutDeleted}
         renderItem={(item) => <AlbumRow key={item.item.id} album={item.item} />}
         keyExtractor={(item) => item.id.toString()}
         ItemSeparatorComponent={() => <View style={styles.separator}></View>}

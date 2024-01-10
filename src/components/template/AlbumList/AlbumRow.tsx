@@ -24,8 +24,7 @@ export default function AlbumRow({ album }: AlbumRowProps) {
   };
 
   const handleOnRemove = () => {
-    alert("Removing....");
-    dispatch(deleteAlbum(album.id));
+    dispatch(deleteAlbum(album));
   };
 
   return (
